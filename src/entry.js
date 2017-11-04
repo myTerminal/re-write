@@ -11,8 +11,6 @@ module.exports = function (args) {
         action = args[1].indexOf('undo-it.js') > -1 ? reWrite.undoIt : reWrite.doIt,
         items;
 
-    console.log('\nArguments:', args);
-
     items = helper.getInputAndOutputItems(action, args);
     input = items[0];
     output = items[1];

@@ -6,8 +6,19 @@ var fs = require('fs'),
 
 module.exports = (function () {
     var temp,
+        delimiters = {
+            'main': '<{([0])}>',
+            'files': '<{([1])}>',
+            'data': '<{([2])}>'
+        },
+        getHexFromByte = function (input) {
+            return ('0' + input.toString(16)).slice(-2);
+        },
+        getByteFromHex = function (input) {
+            return parseInt(input, 16);
+        },
         getBaseDirectory = function (filePaths) {
-            var firstPath = filePaths[0],
+            var firstPath = path.dirname(filePaths[0]),
                 segments = firstPath.split('/'),
                 pathsToTry = new Array(segments).join(',').split(',').map((n, i) => segments.slice(0, i + 1).join('/')),
                 baseDirectories = pathsToTry.filter(p => filePaths.filter(f => f.indexOf(p) ===0).length === filePaths.length).reverse();
@@ -23,28 +34,29 @@ module.exports = (function () {
         getFinalFilePaths = function (filePaths, outputDirectoryPath) {
             return filePaths.map(p => path.join(outputDirectoryPath, p));
         },
-        transformString = function (inputString) {
-            return inputString;
+        transformFileContents = function (input) {
+            return new Array(input.length).join(',').split(',').map((e, i) => getHexFromByte(input[i])).reduce((a, c) => a + c, '');;
         },
-        recoverString = function (transformedString) {
-            return transformedString;
+        recoverFileContents = function (transformedInput) {
+            return Buffer.from(new Array(transformedInput.length / 2).join(',').split(',').map((e, i) => getByteFromHex(transformedInput.substr(i * 2, 2))));
         },
         doIt = function (inputFilePaths, outputFilePath) {
             var textFromFiles = inputFilePaths
                 .map(f =>
-                     f + '<{([0])}>' + fs.readFileSync(f).toString()
-                    ).join('<{([1])}>');
-            fs.writeFileSync(outputFilePath, transformString(textFromFiles));
+                     f + delimiters.data + transformFileContents(fs.readFileSync(f))
+                    ).join(delimiters.files);
+
+            fs.writeFileSync(outputFilePath, textFromFiles);
         },
         undoIt = function (inputFilePath, outputDirectoryPath) {
             var inputFileText = fs.readFileSync(inputFilePath).toString(),
-                outputFilesData = recoverString(inputFileText).split('<{([1])}>')
+                outputFilesData = inputFileText.split(delimiters.files)
                 .map(d => {
-                    var parts = d.split('<{([0])}>');
+                    var parts = d.split(delimiters.data);
 
                     return {
                         name: parts[0],
-                        content: parts[1]
+                        content: recoverFileContents(parts[1])
                     };
                 }),
                 fetchedFilePaths = outputFilesData.map(d => d.name),

@@ -1,6 +1,6 @@
 # re-write
 
-Rewrite files and directories into a single file [in-progress]
+Rewrite files and directories into a single file and vice-versa
 
 [![npm version](https://badge.fury.io/js/re-write.svg)](https://badge.fury.io/js/re-write)
 [![npm downloads](https://img.shields.io/npm/dt/re-write.svg)](https://www.npmjs.com/package/re-write)  
@@ -19,7 +19,15 @@ Rewrite files and directories into a single file [in-progress]
 
 ## What is it?
 
-*re-write* is a command-line utility that can be used to combine multiple files into a single file, optionally with a password protection.
+*re-write* is a command-line utility that can be used to 're-write' multiple files into a single file, optionally with a password protection.
+
+## Background
+
+Back in late 2009, I wrote an encryption algorithm capable of obfuscating single files and I used it to transfer data without getting intercepted by intelligent security systems. The data belonged to me and I believed that I had a right to carry it across machines even to and from environments that did not allow me to do that. The utility was written in VB.Net.
+
+In early 2010, I continued working on that utility to improve its efficieny and later I could enable it to work on files as well as directories.
+
+'re-write' is inspired by the old algorithm and is being now written in JavaScript. I started working on this command-line utility to share this secret weapon of mine with the open-source community.
 
 ## Installation
 
@@ -29,6 +37,22 @@ Rewrite files and directories into a single file [in-progress]
 
 ## How to Use
 
-### Combining files
+'re-write' is a command-line utility that has two basic commands and the inputs you provide and how they are interpreted depend upon the command you use.
 
-### Splitting files
+### How to 're-write' Files
+
+To 're-write' data into a single file, use the following command:
+
+    re-write-do <source1> [source2] [source3] ... <target>
+    
+`source1`, `source2`, `source3`, etc. could be files or directories
+`target` should be an output file or a directory where the 're-written' file will be placed
+
+### How to un-'re-write' files
+
+To 'un-re-write' data from a 're-written' file to the earlier form, use the following command:
+
+    re-write-undo <source> <target>
+
+`source` needs to be a file that was earlier created by 're-write'
+`target` needs to be a directory in which the recovered data needs to be placed
