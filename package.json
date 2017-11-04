@@ -1,0 +1,39 @@
+{
+  "name": "re-write",
+  "version": "0.9.0",
+  "description": "Rewrite files and directories into a single file",
+  "bin": {
+    "re-write-do": "bin/do-it.js",
+    "re-write-undo": "bin/undo-it.js"
+  },
+  "scripts": {
+    "gulp": "gulp",
+    "develop": "gulp develop"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/myTerminal/re-write.git"
+  },
+  "bugs": {
+    "url": "https://github.com/myTerminal/re-write/issues"
+  },
+  "homepage": "https://github.com/myTerminal/re-write#readme",
+  "keywords": [
+    "files",
+    "encryption"
+  ],
+  "author": "Mohammed Ismail Ansari <team.terminal@gmail.com>",
+  "license": "GPL-3.0",
+  "preferGlobal": "true",
+  "dependencies": {
+    "mkdirp": "0.5.1"
+  },
+  "devDependencies": {
+    "babel-core": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "gulp": "3.9.1",
+    "gulp-babel": "7.0.0",
+    "gulp-uglify": "3.0.0",
+    "gulp-watch-now": "0.9.1"
+  }
+}
