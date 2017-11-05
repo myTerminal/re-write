@@ -48,6 +48,8 @@ To 're-write' data into a single file, use the following command:
 `source1`, `source2`, `source3`, etc. could be files or directories
 `target` should be an output file or a directory where the 're-written' file will be placed
 
+You can optionally use a password. Enter one when prompted for or just press `Enter` to skip encryption.
+
 ### How to un-'re-write' files
 
 To 'un-re-write' data from a 're-written' file to the earlier form, use the following command:
@@ -56,3 +58,5 @@ To 'un-re-write' data from a 're-written' file to the earlier form, use the foll
 
 `source` needs to be a file that was earlier created by 're-write'
 `target` needs to be a directory in which the recovered data needs to be placed
+
+If you used a password while 're-writing', you'll be asked for one before you can 'un-re-write'.
