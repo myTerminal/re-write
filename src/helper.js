@@ -6,7 +6,7 @@ var fs = require('fs'),
     reWrite = require('./re-write');
 
 module.exports = (function () {
-    var temp,
+    var nothing,
         getFilesInDirectory = function (dir, filelist) {
             var files = fs.readdirSync(dir);
 

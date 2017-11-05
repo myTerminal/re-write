@@ -1,15 +1,31 @@
-/* global require module */
+/* global require module Buffer */
 
 var fs = require('fs'),
     path = require('path'),
-    mkdirp = require('mkdirp');
+    prompt = require('readline-sync'),
+    md5 = require('md5'),
+    mkdirp = require('mkdirp'),
+    errors = require('./errors');
 
 module.exports = (function () {
-    var temp,
+    var nothing,
         delimiters = {
             'main': '<{([0])}>',
             'files': '<{([1])}>',
             'data': '<{([2])}>'
+        },
+        transforms = [
+            {
+                transform: function (input) {
+                    return createEmptyArray(input.length).map((e, i) => getHexFromByte(input[i])).reduce((a, c) => a + c, '');;
+                },
+                recover: function (transformedInput) {
+                    return Buffer.from(createEmptyArray(transformedInput.length / 2).map((e, i) => getByteFromHex(transformedInput.substr(i * 2, 2))));
+                }
+            }
+        ],
+        createEmptyArray = function (length) {
+            return new Array(length).join(',').split(',');
         },
         getHexFromByte = function (input) {
             return ('0' + input.toString(16)).slice(-2);
@@ -20,8 +36,8 @@ module.exports = (function () {
         getBaseDirectory = function (filePaths) {
             var firstPath = path.dirname(filePaths[0]),
                 segments = firstPath.split('/'),
-                pathsToTry = new Array(segments).join(',').split(',').map((n, i) => segments.slice(0, i + 1).join('/')),
-                baseDirectories = pathsToTry.filter(p => filePaths.filter(f => f.indexOf(p) ===0).length === filePaths.length).reverse();
+                pathsToTry = createEmptyArray(segments).map((n, i) => segments.slice(0, i + 1).join('/')),
+                baseDirectories = pathsToTry.filter(p => filePaths.filter(f => f.indexOf(p) === 0).length === filePaths.length).reverse();
 
             return baseDirectories[0] || '.';
         },
@@ -34,29 +50,45 @@ module.exports = (function () {
         getFinalFilePaths = function (filePaths, outputDirectoryPath) {
             return filePaths.map(p => path.join(outputDirectoryPath, p));
         },
-        transformFileContents = function (input) {
-            return new Array(input.length).join(',').split(',').map((e, i) => getHexFromByte(input[i])).reduce((a, c) => a + c, '');;
-        },
-        recoverFileContents = function (transformedInput) {
-            return Buffer.from(new Array(transformedInput.length / 2).join(',').split(',').map((e, i) => getByteFromHex(transformedInput.substr(i * 2, 2))));
+        encryptOrDecryptText = function (text, password) {
+            return !password
+                ? text
+                : text.split('').map((c, i) => {
+                    return String.fromCharCode(c.charCodeAt(0) ^ password.charCodeAt(i % password.length));
+                }).join('');
         },
         doIt = function (inputFilePaths, outputFilePath) {
-            var textFromFiles = inputFilePaths
-                .map(f =>
-                     f + delimiters.data + transformFileContents(fs.readFileSync(f))
-                    ).join(delimiters.files);
+            var latestTransformIndex = transforms.length - 1,
+                transform = transforms[latestTransformIndex].transform,
+                password = prompt.question('If you want to use a password, enter it: ', { hideEchoBack: true }),
+                metadata = '' + latestTransformIndex + ',' + (password && md5(password)),
+                textFromFiles = inputFilePaths.map(f =>
+                                                   f + delimiters.data + transform(fs.readFileSync(f))
+                                                  ).join(delimiters.files),
+                encryptedText = encryptOrDecryptText(textFromFiles, password);
 
-            fs.writeFileSync(outputFilePath, textFromFiles);
+            fs.writeFileSync(outputFilePath, metadata + delimiters.main + encryptedText);
         },
         undoIt = function (inputFilePath, outputDirectoryPath) {
             var inputFileText = fs.readFileSync(inputFilePath).toString(),
-                outputFilesData = inputFileText.split(delimiters.files)
-                .map(d => {
+                parsedInputText = inputFileText.split(delimiters.main),
+                metadata = parsedInputText[0].split(','),
+                transformIndex = +metadata[0],
+                transform = transforms[transformIndex],
+                usedPasswordHash = metadata[1],
+                password = usedPasswordHash ? prompt.question('Enter the password used while re-writing: ', { hideEchoBack: true}) : '';
+
+            if (usedPasswordHash && usedPasswordHash !== md5(password)) {
+                errors.showError('INCORRECT_PASSWORD');
+            }
+
+            var data = encryptOrDecryptText(parsedInputText[1], password),
+                outputFilesData = data.split(delimiters.files).map(d => {
                     var parts = d.split(delimiters.data);
 
                     return {
                         name: parts[0],
-                        content: recoverFileContents(parts[1])
+                        content: transform.recover(parts[1])
                     };
                 }),
                 fetchedFilePaths = outputFilesData.map(d => d.name),

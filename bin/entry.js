@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-"use strict";var helper=require("./helper"),reWrite=require("./re-write");module.exports=function(e){var r,t=e[1].indexOf("undo-it.js")>-1?reWrite.undoIt:reWrite.doIt;t((r=helper.getInputAndOutputItems(t,e))[0],r[1])};
+"use strict";var helper=require("./helper"),reWrite=require("./re-write");module.exports=function(e){var r=e[1].indexOf("undo-it.js")>-1?reWrite.undoIt:reWrite.doIt,t=helper.getInputAndOutputItems(r,e);r(t[0],t[1])};
