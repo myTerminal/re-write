@@ -2,7 +2,7 @@
 
 var fs = require('fs'),
     path = require('path'),
-    errors = require('./errors'),
+    io = require('./interface'),
     reWrite = require('./re-write');
 
 module.exports = (function () {
@@ -39,7 +39,7 @@ module.exports = (function () {
                 isInputAFile;
 
             if (args.length < 4) {
-                errors.showError('ARG_COUNT_LESS');
+                io.showError('ARG_COUNT_LESS');
             }
 
             if (action === reWrite.doIt) {
@@ -55,13 +55,13 @@ module.exports = (function () {
             else {
 
                 if (args.length > 4) {
-                    errors.showError('ARG_COUNT_MORE');
+                    io.showError('ARG_COUNT_MORE');
                 }
 
                 isInputAFile = fs.existsSync(args[2]) && fs.statSync(args[2]).isFile();
 
                 if (!isInputAFile || !isLastArgumentADirectory) {
-                    errors.showError('UNDO_ARGS');
+                    io.showError('UNDO_ARGS');
                 }
 
                 input = args[2];

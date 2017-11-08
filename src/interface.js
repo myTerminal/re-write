@@ -10,12 +10,16 @@ module.exports = (function () {
             'INVALID_SOURCE': 'You supplied an invalid source.',
             'INCORRECT_PASSWORD': 'The password does not match with the one used while re-writing'
         },
+        showMessage = function () {
+            console.log(Array.prototype.slice.apply(arguments).join(' '));
+        },
         showError = function (errorString) {
             console.log('\n[Error]', errors[errorString], '\n');
             process.exit();
         };
 
     return {
+        showMessage: showMessage,
         showError: showError
     };
 })();

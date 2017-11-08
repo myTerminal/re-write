@@ -5,7 +5,7 @@ var fs = require('fs'),
     prompt = require('readline-sync'),
     md5 = require('md5'),
     mkdirp = require('mkdirp'),
-    errors = require('./errors');
+    io = require('./interface');
 
 module.exports = (function () {
     var nothing,
@@ -67,7 +67,11 @@ module.exports = (function () {
                                                   ).join(delimiters.files),
                 encryptedText = encryptOrDecryptText(textFromFiles, password);
 
+            io.showMessage(inputFilePaths.length, 'input files provided');
+
             fs.writeFileSync(outputFilePath, metadata + delimiters.main + encryptedText);
+
+            io.showMessage('Data re-written at', outputFilePath);
         },
         undoIt = function (inputFilePath, outputDirectoryPath) {
             var inputFileText = fs.readFileSync(inputFilePath).toString(),
@@ -79,7 +83,7 @@ module.exports = (function () {
                 password = usedPasswordHash ? prompt.question('Enter the password used while re-writing: ', { hideEchoBack: true}) : '';
 
             if (usedPasswordHash && usedPasswordHash !== md5(password)) {
-                errors.showError('INCORRECT_PASSWORD');
+                io.showError('INCORRECT_PASSWORD');
             }
 
             var data = encryptOrDecryptText(parsedInputText[1], password),
@@ -97,10 +101,14 @@ module.exports = (function () {
                 relativeFilePaths = getRelativePaths(liftedFilePaths, baseDirectory),
                 finalFilePaths = getFinalFilePaths(relativeFilePaths, outputDirectoryPath);
 
+            io.showMessage(finalFilePaths.length, 'files to be (un)re-written');
+
             finalFilePaths.forEach((p, i) => {
                 mkdirp.sync(path.dirname(p));
                 fs.writeFileSync(p, outputFilesData[i].content);
             });
+
+            io.showMessage('(Un)re-written data placed at', outputDirectoryPath);
         };
 
     return {
