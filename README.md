@@ -13,8 +13,7 @@ Rewrite files and directories into a single file and vice-versa
 [![Dependency Status](https://david-dm.org/myTerminal/re-write.svg)](https://david-dm.org/myTerminal/re-write)
 [![devDependency Status](https://david-dm.org/myTerminal/re-write/dev-status.svg)](https://david-dm.org/myTerminal/re-write#info=devDependencies)
 [![peer Dependency Status](https://david-dm.org/myTerminal/re-write/peer-status.svg)](https://david-dm.org/myTerminal/re-write#info=peerDependencies)  
-[![License](https://img.shields.io/badge/LICENSE-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl.html)
-[![Gratipay](http://img.shields.io/gratipay/myTerminal.svg)](https://gratipay.com/myTerminal)  
+[![License](https://img.shields.io/badge/LICENSE-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl.html)  
 [![NPM](https://nodei.co/npm/re-write.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/re-write/)
 
 ## What is it?
