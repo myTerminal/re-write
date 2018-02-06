@@ -1,7 +1,5 @@
 # re-write
 
-Rewrite files and directories into a single file and vice-versa
-
 [![npm version](https://badge.fury.io/js/re-write.svg)](https://badge.fury.io/js/re-write)
 [![npm downloads](https://img.shields.io/npm/dt/re-write.svg)](https://www.npmjs.com/package/re-write)  
 [![Build Status](https://travis-ci.org/myTerminal/re-write.svg?branch=master)](https://travis-ci.org/myTerminal/re-write)
@@ -15,6 +13,8 @@ Rewrite files and directories into a single file and vice-versa
 [![peer Dependency Status](https://david-dm.org/myTerminal/re-write/peer-status.svg)](https://david-dm.org/myTerminal/re-write#info=peerDependencies)  
 [![License](https://img.shields.io/badge/LICENSE-GPL%20v3.0-blue.svg)](https://www.gnu.org/licenses/gpl.html)  
 [![NPM](https://nodei.co/npm/re-write.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/re-write/)
+
+Rewrite files and directories into a single file and vice-versa
 
 ## What is it?
 
