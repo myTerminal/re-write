@@ -4,7 +4,6 @@
 [![npm downloads](https://img.shields.io/npm/dt/re-write.svg)](https://www.npmjs.com/package/re-write)  
 [![Build Status](https://travis-ci.org/myTerminal/re-write.svg?branch=master)](https://travis-ci.org/myTerminal/re-write)
 [![Code Climate](https://codeclimate.com/github/myTerminal/re-write.png)](https://codeclimate.com/github/myTerminal/re-write)
-[![Package Quality](http://npm.packagequality.com/shield/re-write.svg)](http://packagequality.com/#?package=re-write)
 [![Coverage Status](https://img.shields.io/coveralls/myTerminal/re-write.svg)](https://coveralls.io/r/myTerminal/re-write?branch=master)
 [![bitHound Overall Score](https://www.bithound.io/github/myTerminal/re-write/badges/score.svg)](https://www.bithound.io/github/myTerminal/re-write)
 [![bitHound Code](https://www.bithound.io/github/myTerminal/re-write/badges/code.svg)](https://www.bithound.io/github/myTerminal/re-write)  
