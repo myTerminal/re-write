@@ -8,9 +8,8 @@ var gulp = require('gulp'),
 gulp.task('scripts', function () {
     return gulp.src([
         'src/**/*.js'
-    ]).pipe(babel({
-        presets: ['env']
-    })).pipe(uglify())
+    ]).pipe(babel())
+        .pipe(uglify())
         .pipe(gulp.dest('bin'));
 });
 
