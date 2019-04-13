@@ -15,13 +15,13 @@ Rewrite files and directories into a single file and vice-versa
 
 ## What is it?
 
-*re-write* is a command-line utility that can be used to 're-write' multiple files into a single file, optionally with a password protection.
+*re-write* is a command-line utility that can be used to 're-write' multiple files into a single file, optionally with password protection.
 
 ## Background
 
 Back in late 2009, I wrote an encryption algorithm capable of obfuscating single files and I used it to transfer data without getting intercepted by intelligent security systems. The data belonged to me and I believed that I had a right to carry it across machines even to and from environments that did not allow me to do that. The utility was written in VB.Net.
 
-In early 2010, I continued working on that utility to improve its efficieny and later I could enable it to work on files as well as directories.
+In early 2010, I continued working on that utility to improve its efficiency and later I could enable it to work on files as well as directories.
 
 're-write' is inspired by the old algorithm and is being now written in JavaScript. I started working on this command-line utility to share this secret weapon of mine with the open-source community.
 
