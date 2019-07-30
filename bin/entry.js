@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-"use strict";var helper=require("./helper"),reWrite=require("./re-write");module.exports=function(e){var r=e[1].indexOf("undo")>-1?reWrite.undoIt:reWrite.doIt,t=helper.getInputAndOutputItems(r,e);r(t[0],t[1])};
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var _helper=require("./helper"),_helper2=_interopRequireDefault(_helper),_reWrite=require("./re-write"),_reWrite2=_interopRequireDefault(_reWrite);function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}exports.default=function(e){var r=-1<e[1].indexOf("undo")?_reWrite2.default.undoIt:_reWrite2.default.doIt,t=_helper2.default.getInputAndOutputItems(r,e);r(t[0],t[1])};

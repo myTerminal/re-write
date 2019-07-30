@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-"use strict";require("./entry")(process.argv);
+"use strict";var _entry=require("./entry"),_entry2=_interopRequireDefault(_entry);function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}(0,_entry2.default)(process.argv);

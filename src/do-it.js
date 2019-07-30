@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
-/* global require process */
+/* global process */
 
-require('./entry')(process.argv);
+import run from './entry';
+
+run(process.argv);
