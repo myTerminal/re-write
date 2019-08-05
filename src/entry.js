@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-/* global require module */
+/* global require */
 
 const helper = require('./helper');
 const reWrite = require('./re-write');
 
-module.exports = args => {
-    const action = args[1].indexOf('undo') > -1 ? reWrite.undoIt : reWrite.doIt,
-        items = helper.getInputAndOutputItems(action, args),
-        input = items[0],
-        output = items[1];
+const args = Array.from(process.argv); // Arguments as an array
+const operation = args[1]; // Operation argument
+const parameters = args.slice(2); // Operation parameters
 
-    action(input, output);
-};
+const action = operation.indexOf('undo') > -1 ? reWrite.undoIt : reWrite.doIt; // Action to be performed
+const [input, output] = helper.getInputAndOutputItems(action, parameters); // Input and output for the action
+
+action(input, output); // Perform the action on input and output

@@ -44,12 +44,12 @@ module.exports.getInputAndOutputItems = (action, args) => {
         isLastArgumentADirectory = fs.existsSync(lastArgument) && fs.statSync(lastArgument).isDirectory(),
         isInputAFile;
 
-    if (args.length < 4) {
+    if (args.length < 2) {
         io.showError('ARG_COUNT_LESS');
     }
 
     if (action === reWrite.doIt) {
-        input = inflateInput(args.slice(2, args.length - 1));
+        input = inflateInput(args.slice(0, args.length - 1));
 
         if (isLastArgumentADirectory) {
             output = path.join(lastArgument, 'output-file.txt');
@@ -57,17 +57,17 @@ module.exports.getInputAndOutputItems = (action, args) => {
             output = lastArgument;
         }
     } else {
-        if (args.length > 4) {
+        if (args.length > 2) {
             io.showError('ARG_COUNT_MORE');
         }
 
-        isInputAFile = fs.existsSync(args[2]) && fs.statSync(args[2]).isFile();
+        isInputAFile = fs.existsSync(args[0]) && fs.statSync(args[0]).isFile();
 
         if (!isInputAFile || !isLastArgumentADirectory) {
             io.showError('UNDO_ARGS');
         }
 
-        input = args[2];
+        input = args[0];
         output = lastArgument;
     }
 
