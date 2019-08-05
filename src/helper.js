@@ -1,80 +1,78 @@
 /* global module require */
 
-var fs = require('fs'),
+const fs = require('fs'),
     path = require('path'),
     io = require('./interface'),
     reWrite = require('./re-write');
 
-module.exports = (function () {
-    var nothing,
-        getFilesInDirectory = function (dir, filelist) {
-            var files = fs.readdirSync(dir);
+const getFilesInDirectory = (dir, filelist) => {
+    const files = fs.readdirSync(dir);
 
-            filelist = filelist || [];
+    filelist = filelist || [];
 
-            files.forEach(function (file) {
-                if (fs.statSync(path.join(dir, file)).isDirectory()) {
-                    filelist = getFilesInDirectory(path.join(dir, file), filelist);
-                } else {
-                    filelist.push(path.join(dir, file));
-                }
-            });
-
-            return filelist;
-        },
-        inflateInput = function (inputs) {
-            return inputs.map(input => {
-                if (fs.lstatSync(input).isDirectory()) {
-                    return getFilesInDirectory(input);
-                } else {
-                    return [input];
-                }
-            }).reduce((a, c) => a.concat(c), []);
-        },
-        getInputAndOutputItems = function (action, args) {
-            var input,
-                output,
-                lastArgument = args.slice(0).pop(),
-                isLastArgumentADirectory = fs.existsSync(lastArgument) && fs.statSync(lastArgument).isDirectory(),
-                isInputAFile;
-
-            if (args.length < 4) {
-                io.showError('ARG_COUNT_LESS');
+    files.forEach(
+        file => {
+            if (fs.statSync(path.join(dir, file)).isDirectory()) {
+                filelist = getFilesInDirectory(path.join(dir, file), filelist);
+            } else {
+                filelist.push(path.join(dir, file));
             }
+        }
+    );
 
-            if (action === reWrite.doIt) {
+    return filelist;
+};
 
-                input = inflateInput(args.slice(2, args.length - 1));
-
-                if (isLastArgumentADirectory) {
-                    output = path.join(lastArgument, 'output-file.txt');
-                } else {
-                    output = lastArgument;
-                }
+const inflateInput = inputs =>
+    inputs.map(
+        input => {
+            if (fs.lstatSync(input).isDirectory()) {
+                return getFilesInDirectory(input);
+            } else {
+                return [input];
             }
-            else {
+        }
+    ).reduce(
+        (a, c) => a.concat(c),
+        []
+    );
 
-                if (args.length > 4) {
-                    io.showError('ARG_COUNT_MORE');
-                }
+module.exports.getInputAndOutputItems = (action, args) => {
+    let input,
+        output,
+        lastArgument = args.slice(0).pop(),
+        isLastArgumentADirectory = fs.existsSync(lastArgument) && fs.statSync(lastArgument).isDirectory(),
+        isInputAFile;
 
-                isInputAFile = fs.existsSync(args[2]) && fs.statSync(args[2]).isFile();
+    if (args.length < 4) {
+        io.showError('ARG_COUNT_LESS');
+    }
 
-                if (!isInputAFile || !isLastArgumentADirectory) {
-                    io.showError('UNDO_ARGS');
-                }
+    if (action === reWrite.doIt) {
+        input = inflateInput(args.slice(2, args.length - 1));
 
-                input = args[2];
-                output = lastArgument;
-            }
+        if (isLastArgumentADirectory) {
+            output = path.join(lastArgument, 'output-file.txt');
+        } else {
+            output = lastArgument;
+        }
+    } else {
+        if (args.length > 4) {
+            io.showError('ARG_COUNT_MORE');
+        }
 
-            return [
-                input,
-                output
-            ];
-        };
+        isInputAFile = fs.existsSync(args[2]) && fs.statSync(args[2]).isFile();
 
-    return {
-        getInputAndOutputItems: getInputAndOutputItems
-    };
-})();
+        if (!isInputAFile || !isLastArgumentADirectory) {
+            io.showError('UNDO_ARGS');
+        }
+
+        input = args[2];
+        output = lastArgument;
+    }
+
+    return [
+        input,
+        output
+    ];
+};
