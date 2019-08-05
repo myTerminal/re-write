@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-import helper from './helper';
-import reWrite from './re-write';
+/* global require module */
 
-export default args => {
+const helper = require('./helper');
+const reWrite = require('./re-write');
+
+module.exports = args => {
     const action = args[1].indexOf('undo') > -1 ? reWrite.undoIt : reWrite.doIt,
         items = helper.getInputAndOutputItems(action, args),
         input = items[0],
