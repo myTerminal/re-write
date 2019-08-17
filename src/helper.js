@@ -40,9 +40,11 @@ const inflateInput = inputs =>
 module.exports.getInputAndOutputItems = (action, args) => {
     let input,
         output,
-        lastArgument = args.slice(0).pop(),
-        isLastArgumentADirectory = fs.existsSync(lastArgument) && fs.statSync(lastArgument).isDirectory(),
         isInputAFile;
+
+    const lastArgument = args.slice(0).pop(),
+        isLastArgumentADirectory = fs.existsSync(lastArgument)
+            && fs.statSync(lastArgument).isDirectory();
 
     if (args.length < 2) {
         io.showError('ARG_COUNT_LESS');
@@ -67,7 +69,7 @@ module.exports.getInputAndOutputItems = (action, args) => {
             io.showError('UNDO_ARGS');
         }
 
-        input = args[0];
+        [input] = args;
         output = lastArgument;
     }
 

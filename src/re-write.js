@@ -18,7 +18,11 @@ const transforms = [
         transform: input =>
             createEmptyArray(input.length).map((e, i) => getHexFromByte(input[i])).reduce((a, c) => a + c, ''),
         recover: transformedInput =>
-            Buffer.from(createEmptyArray(transformedInput.length / 2).map((e, i) => getByteFromHex(transformedInput.substr(i * 2, 2))))
+            Buffer.from(
+                createEmptyArray(transformedInput.length / 2).map(
+                    (e, i) => getByteFromHex(transformedInput.substr(i * 2, 2))
+                )
+            )
     }
 ];
 
@@ -26,16 +30,19 @@ const createEmptyArray = length =>
     new Array(length).join(',').split(',');
 
 const getHexFromByte = input =>
-    ('0' + input.toString(16)).slice(-2);
+    (`0${input.toString(16)}`).slice(-2);
 
 const getByteFromHex = input =>
     parseInt(input, 16);
 
 const getBaseDirectory = function (filePaths) {
-    var firstPath = path.dirname(filePaths[0]),
+    const firstPath = path.dirname(filePaths[0]),
         segments = firstPath.split('/'),
         pathsToTry = createEmptyArray(segments).map((n, i) => segments.slice(0, i + 1).join('/')),
-        baseDirectories = pathsToTry.filter(p => filePaths.filter(f => f.indexOf(p) === 0).length === filePaths.length).reverse();
+        baseDirectories = pathsToTry.filter(
+            p => filePaths.filter(
+                f => f.indexOf(p) === 0).length === filePaths.length
+        ).reverse();
 
     return baseDirectories[0] || '.';
 };
@@ -49,21 +56,25 @@ const getRelativePaths = (filePaths, baseDirectory) =>
 const getFinalFilePaths = (filePaths, outputDirectoryPath) =>
     filePaths.map(p => path.join(outputDirectoryPath, p));
 
-const encryptOrDecryptText = (text, password) =>
-    !password ?
-    text :
-    text.split('').map(
-        (c, i) => String.fromCharCode(c.charCodeAt(0) ^ password.charCodeAt(i % password.length))
-    ).join('');
+const encryptOrDecryptText = (text, password) => {
+    if (!password) {
+        return text;
+    } else {
+        return text.split('').map(
+            (c, i) => String.fromCharCode(c.charCodeAt(0)
+                 ^ password.charCodeAt(i % password.length))
+        ).join('');
+    }
+};
 
 module.exports.doIt = (inputFilePaths, outputFilePath) => {
     const latestTransformIndex = transforms.length - 1,
-        transform = transforms[latestTransformIndex].transform,
+        { transform } = transforms[latestTransformIndex],
         password = prompt.question('If you want to use a password, enter it: ', { hideEchoBack: true }),
-        metadata = '' + latestTransformIndex + ',' + (password && md5(password)),
-        textFromFiles = inputFilePaths.map(f =>
-                                           f + delimiters.data + transform(fs.readFileSync(f))
-                                          ).join(delimiters.files),
+        metadata = `${latestTransformIndex},${(password && md5(password))}`,
+        textFromFiles = inputFilePaths.map(
+            f => f + delimiters.data + transform(fs.readFileSync(f))
+        ).join(delimiters.files),
         encryptedText = encryptOrDecryptText(textFromFiles, password);
 
     io.showMessage(inputFilePaths.length, 'input files provided');
@@ -80,7 +91,7 @@ module.exports.undoIt = (inputFilePath, outputDirectoryPath) => {
         transformIndex = +metadata[0],
         transform = transforms[transformIndex],
         usedPasswordHash = metadata[1],
-        password = usedPasswordHash ? prompt.question('Enter the password used while re-writing: ', { hideEchoBack: true}) : '';
+        password = usedPasswordHash ? prompt.question('Enter the password used while re-writing: ', { hideEchoBack: true }) : '';
 
     if (usedPasswordHash && usedPasswordHash !== md5(password)) {
         io.showError('INCORRECT_PASSWORD');

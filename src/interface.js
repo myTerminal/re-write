@@ -9,8 +9,8 @@ const errors = {
     INCORRECT_PASSWORD: 'The password does not match with the one used while re-writing'
 };
 
-module.exports.showMessage = () => {
-    console.log(Array.prototype.slice.apply(arguments).join(' '));
+module.exports.showMessage = (...args) => {
+    console.log(args.join(' '));
 };
 
 module.exports.showError = errorString => {
