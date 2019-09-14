@@ -1,6 +1,6 @@
 {
   "name": "re-write",
-  "version": "0.9.3",
+  "version": "0.10.0",
   "description": "Rewrite files and directories into a single file and vice-versa",
   "bin": {
     "re-write-do": "bin/entry.js",
