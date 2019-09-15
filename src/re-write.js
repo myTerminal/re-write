@@ -14,6 +14,13 @@ const delimiters = {
     data: '<{([2])}>'
 };
 
+// Function to convert byte to hex
+const getHexFromByte = input => (`0${input.toString(16)}`).slice(-2);
+
+// Function to convert hex to byte
+const getByteFromHex = input => parseInt(input, 16);
+
+// A collection of transforms
 const transforms = [
     {
         transform: input =>
@@ -26,14 +33,8 @@ const transforms = [
     }
 ];
 
-// Function to convert byte to hex
-const getHexFromByte = input => (`0${input.toString(16)}`).slice(-2);
-
-// Function to convert hex to byte
-const getByteFromHex = input => parseInt(input, 16);
-
 // Function to lift paths
-const liftPath = path => path.split('/').filter(s => s !== '..').join('/');
+const liftPath = filePath => filePath.split('/').filter(s => s !== '..').join('/');
 
 // Function to get absolute file paths for an output directory
 const getFinalFilePaths = (filePaths, outputDirectoryPath) =>
@@ -86,12 +87,9 @@ module.exports.undoIt = (inputFilePath, outputDirectoryPath) => {
     const data = encryptOrDecryptText(parsedInputText[1], password);
     const outputFilesData = data.split(delimiters.files).map(
         d => {
-            const parts = d.split(delimiters.data);
+            const [name, content] = d.split(delimiters.data);
 
-            return {
-                name: parts[0],
-                content: recover(parts[1])
-            };
+            return { name, content: recover(content) };
         }
     );
     const fetchedFilePaths = outputFilesData.map(d => d.name);

@@ -9,11 +9,8 @@ const reWrite = require('./re-write');
 const defaultOutputFileName = 'output-file.txt';
 
 // Recursively get a list of files in a directory
-const getFilesInDirectory = (dir, filelist) => {
+const getFilesInDirectory = (dir, filelist = []) => {
     const files = fs.readdirSync(dir);
-
-    // Start with an empty collection
-    filelist = filelist || [];
 
     files.forEach(
         file => {
@@ -45,51 +42,46 @@ const inflateInput = inputs =>
         []
     );
 
-// Extract input and output from arguments
-module.exports.getInputAndOutputItems = (action, args) => {
-    let input,
-        output,
-        isInputAFile;
+// Function to determine whether a file-system item is a directory
+const isDirectory = f => fs.existsSync(f) && fs.statSync(f).isDirectory();
 
-    const lastArgument = args.slice(0).pop();
-    const isLastArgumentADirectory = fs.existsSync(lastArgument)
-        && fs.statSync(lastArgument).isDirectory();
+// Function to determine whether a file-system item is a file
+const isFile = f => fs.existsSync(f) && fs.statSync(f).isFile();
+
+// Function to extract input and output for transform operation
+const getInputAndOutputForTransform = (args, target) =>
+    [
+        inflateInput(args.slice(0, args.length - 1)),
+        isDirectory(target) ? path.join(target, defaultOutputFileName) : target
+    ];
+
+// Function to extract input and output for recover operation
+const getInputAndOutputForRecover = (args, target) => {
+    // Validate that there are at most two arguments
+    if (args.length > 2) {
+        io.showError('ARG_COUNT_MORE');
+    }
+
+    // Validate input
+    if (!isFile(args[0]) || !isDirectory(target)) {
+        io.showError('UNDO_ARGS');
+    }
+
+    return args;
+};
+
+// Function to extract input and output from arguments
+module.exports.getInputAndOutputItems = (action, args) => {
+    // Extract the target
+    const target = args.slice(0).pop();
 
     // Validate that there are at least two arguments
     if (args.length < 2) {
         io.showError('ARG_COUNT_LESS');
     }
 
-    if (action === reWrite.doIt) { // Transform event
-        // Get input file paths
-        input = inflateInput(args.slice(0, args.length - 1));
-
-        // Generate output filename
-        if (isLastArgumentADirectory) {
-            output = path.join(lastArgument, defaultOutputFileName);
-        } else {
-            output = lastArgument;
-        }
-    } else { // Untransform event
-        // Validate that there are at most two arguments
-        if (args.length > 2) {
-            io.showError('ARG_COUNT_MORE');
-        }
-
-        isInputAFile = fs.existsSync(args[0]) && fs.statSync(args[0]).isFile();
-
-        // Validate input
-        if (!isInputAFile || !isLastArgumentADirectory) {
-            io.showError('UNDO_ARGS');
-        }
-
-        // Finally generate input and output parameters
-        [input] = args;
-        output = lastArgument;
-    }
-
-    return [
-        input,
-        output
-    ];
+    // Perform transform or recover
+    return action === reWrite.doIt
+        ? getInputAndOutputForTransform(args, target)
+        : getInputAndOutputForRecover(args, target);
 };
