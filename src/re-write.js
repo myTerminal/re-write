@@ -6,7 +6,7 @@ const prompt = require('readline-sync');
 const md5 = require('md5');
 
 const mkdirp = require('mkdirp');
-const io = require('./interface');
+const { showMessage, showError, errors } = require('./interface');
 
 const delimiters = {
     main: '<{([0])}>',
@@ -63,12 +63,12 @@ module.exports.doIt = (inputFilePaths, outputFilePath) => {
     ).join(delimiters.files);
     const encryptedText = encryptOrDecryptText(textFromFiles, password);
 
-    io.showMessage(inputFilePaths.length, 'input files provided');
+    showMessage(inputFilePaths.length, 'input files provided');
 
     // Do the final re-write
     fs.writeFileSync(outputFilePath, `${metadata}${delimiters.main}${encryptedText}`);
 
-    io.showMessage('Data re-written at', outputFilePath);
+    showMessage('Data re-written at', outputFilePath);
 };
 
 // Function to untransform an input file to an output directory
@@ -81,7 +81,7 @@ module.exports.undoIt = (inputFilePath, outputDirectoryPath) => {
 
     // Validate the provided password
     if (usedPasswordHash && usedPasswordHash !== md5(password)) {
-        io.showError('INCORRECT_PASSWORD');
+        showError(errors.INCORRECT_PASSWORD);
     }
 
     const data = encryptOrDecryptText(parsedInputText[1], password);
@@ -95,7 +95,7 @@ module.exports.undoIt = (inputFilePath, outputDirectoryPath) => {
     const fetchedFilePaths = outputFilesData.map(d => d.name);
     const finalFilePaths = getFinalFilePaths(fetchedFilePaths, outputDirectoryPath);
 
-    io.showMessage(finalFilePaths.length, 'files to be (un)re-written');
+    showMessage(finalFilePaths.length, 'files to be (un)re-written');
 
     // Do the (un)re-write
     finalFilePaths.forEach(
@@ -105,5 +105,5 @@ module.exports.undoIt = (inputFilePath, outputDirectoryPath) => {
         }
     );
 
-    io.showMessage('(Un)re-written data placed at', outputDirectoryPath);
+    showMessage('(Un)re-written data placed at', outputDirectoryPath);
 };

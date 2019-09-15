@@ -3,10 +3,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const io = require('./interface');
+const { showError, errors } = require('./interface');
 const reWrite = require('./re-write');
 
 const defaultOutputFileName = 'output-file.txt';
+const defaultOutputDirectory = './';
 
 // Recursively get a list of files in a directory
 const getFilesInDirectory = (dir, filelist = []) => {
@@ -49,39 +50,50 @@ const isDirectory = f => fs.existsSync(f) && fs.statSync(f).isDirectory();
 const isFile = f => fs.existsSync(f) && fs.statSync(f).isFile();
 
 // Function to extract input and output for transform operation
-const getInputAndOutputForTransform = (args, target) =>
-    [
-        inflateInput(args.slice(0, args.length - 1)),
-        isDirectory(target) ? path.join(target, defaultOutputFileName) : target
-    ];
-
-// Function to extract input and output for recover operation
-const getInputAndOutputForRecover = (args, target) => {
-    // Validate that there are at most two arguments
-    if (args.length > 2) {
-        io.showError('ARG_COUNT_MORE');
+const getInputAndOutputForTransform = args => {
+    // Validate that there are at least two arguments
+    if (args.length < 2) {
+        showError(errors.ARG_COUNT_LESS);
     }
 
-    // Validate input
-    if (!isFile(args[0]) || !isDirectory(target)) {
-        io.showError('UNDO_ARGS');
-    }
-
-    return args;
-};
-
-// Function to extract input and output from arguments
-module.exports.getInputAndOutputItems = (action, args) => {
     // Extract the target
     const target = args.slice(0).pop();
 
-    // Validate that there are at least two arguments
-    if (args.length < 2) {
-        io.showError('ARG_COUNT_LESS');
+    // Validate that the target file does not exist
+    if (isFile(target)) {
+        showError(errors.TARGET_FILE_EXISTS);
     }
 
-    // Perform transform or recover
-    return action === reWrite.doIt
-        ? getInputAndOutputForTransform(args, target)
-        : getInputAndOutputForRecover(args, target);
+    return [
+        inflateInput(args.slice(0, args.length - 1)),
+        isDirectory(target) ? path.join(target, defaultOutputFileName) : target
+    ];
 };
+
+// Function to extract input and output for recover operation
+const getInputAndOutputForRecover = args => {
+    // Validate that there are at most two arguments
+    if (args.length > 2) {
+        showError(errors.ARG_COUNT_MORE);
+    }
+
+    // Validate that there is at least one argument
+    if (args.length < 1) {
+        showError(errors.ARG_COUNT_LESS);
+    }
+
+    // Validate input
+    if (!isFile(args[0]) || (args.length > 1 && !isDirectory(args[1]))) {
+        showError(errors.UNDO_ARGS_INVALID);
+    }
+
+    return args.length === 2
+        ? args // Use the same arguments
+        : args.concat([defaultOutputDirectory]); // Use default output directory for target
+};
+
+// Function to extract input and output from arguments
+module.exports.getInputAndOutputItems = (action, args) =>
+    (action === reWrite.doIt
+        ? getInputAndOutputForTransform(args)
+        : getInputAndOutputForRecover(args));
