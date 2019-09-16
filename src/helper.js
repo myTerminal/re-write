@@ -10,23 +10,18 @@ const defaultOutputFileName = 'output-file.txt';
 const defaultOutputDirectory = './';
 
 // Recursively get a list of files in a directory
-const getFilesInDirectory = (dir, filelist = []) => {
-    const files = fs.readdirSync(dir);
-
-    files.forEach(
-        file => {
-            if (fs.statSync(path.join(dir, file)).isDirectory()) {
-                // Recursive call for child directory
-                filelist = getFilesInDirectory(path.join(dir, file), filelist);
-            } else {
-                // Add current file to the collection
-                filelist.push(path.join(dir, file));
-            }
-        }
-    );
-
-    return filelist;
-};
+const getFilesInDirectory = dir =>
+    fs.readdirSync(dir)
+        .map(
+            file =>
+                (fs.statSync(path.join(dir, file)).isDirectory()
+                    ? getFilesInDirectory(path.join(dir, file))
+                    : [path.join(dir, file)])
+        )
+        .reduce(
+            (a, c) => a.concat(c),
+            []
+        );
 
 // Inflate input paths to be file paths
 const inflateInput = inputs =>
