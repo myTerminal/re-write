@@ -7,31 +7,18 @@ const { showError, errors } = require('./interface');
 const reWrite = require('./re-write');
 
 const defaultOutputFileName = 'output-file.txt';
+const defaultInputDirectory = './';
 const defaultOutputDirectory = './';
 
-// Recursively get a list of files in a directory
-const getFilesInDirectory = dir =>
-    fs.readdirSync(dir)
-        .map(
-            file =>
-                (fs.statSync(path.join(dir, file)).isDirectory()
-                    ? getFilesInDirectory(path.join(dir, file))
-                    : [path.join(dir, file)])
-        )
-        .reduce(
-            (a, c) => a.concat(c),
-            []
-        );
-
-// Inflate input paths to be file paths
-const inflateInput = inputs =>
+// Function to inflate input paths to be just file paths
+const inflateInput = (inputs, dir = defaultInputDirectory) =>
     inputs.map(
         input => {
-            if (fs.lstatSync(input).isDirectory()) {
-                return getFilesInDirectory(input);
-            } else {
-                return [input];
-            }
+            const item = path.join(dir, input);
+
+            return fs.lstatSync(item).isDirectory()
+                ? inflateInput(fs.readdirSync(item), item)
+                : [item];
         }
     ).reduce(
         (a, c) => a.concat(c),
