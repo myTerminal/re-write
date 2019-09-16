@@ -49,12 +49,25 @@ const isDirectory = f => fs.existsSync(f) && fs.statSync(f).isDirectory();
 // Function to determine whether a file-system item is a file
 const isFile = f => fs.existsSync(f) && fs.statSync(f).isFile();
 
+// Function to throw error if a path exists
+const throwErrorIfDoesNotExists = input => {
+    if (!fs.existsSync(input)) {
+        showError(`${errors.PATH_DOES_NOT_EXIST}: ${input}`);
+    }
+};
+
 // Function to extract input and output for transform operation
 const getInputAndOutputForTransform = args => {
     // Validate that there are at least two arguments
     if (args.length < 2) {
         showError(errors.ARG_COUNT_LESS);
     }
+
+    // Extract the input arguments
+    const inputArgs = args.slice(0, args.length - 1);
+
+    // Validate that all input paths exist
+    inputArgs.forEach(throwErrorIfDoesNotExists);
 
     // Extract the target
     const target = args.slice(0).pop();
@@ -65,7 +78,7 @@ const getInputAndOutputForTransform = args => {
     }
 
     return [
-        inflateInput(args.slice(0, args.length - 1)),
+        inflateInput(inputArgs),
         isDirectory(target) ? path.join(target, defaultOutputFileName) : target
     ];
 };
