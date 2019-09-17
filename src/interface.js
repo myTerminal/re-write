@@ -13,7 +13,10 @@ module.exports.showMessage = (...args) => {
     console.log(args.join(' '));
 };
 
-module.exports.showError = errorString => {
+module.exports.showError = (errorString, shouldQuit = true) => {
     console.log('\n[Error]', errorString, '\n');
-    process.exit();
+
+    if (shouldQuit) {
+        process.exit();
+    }
 };
