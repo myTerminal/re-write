@@ -9,9 +9,9 @@ const mkdirp = require('mkdirp');
 const { showMessage, showError, errors } = require('./interface');
 
 const delimiters = {
-    main: '<{([0])}>',
-    files: '<{([1])}>',
-    data: '<{([2])}>'
+    main: '@@@[0]@@@',
+    files: '@@@[1]@@@',
+    data: '@@@[2]@@@'
 };
 
 // Function to convert byte to hex
