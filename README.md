@@ -14,17 +14,19 @@
 
 Rewrite files and directories into a single file and vice-versa
 
+> **Note:** Breaking changes in version 1
+
 ## What is it?
 
-*re-write* is a command-line utility that can be used to 're-write' multiple files into a single file, optionally with password protection.
+*re-write* is a command-line utility that can be used to 're-write' multiple files (and/or directories) into a single file, optionally with password protection.
 
 ## Background
 
-Back in late 2009, I wrote an encryption algorithm capable of obfuscating single files and I used it to transfer data without getting intercepted by intelligent security systems. The data belonged to me and I believed that I had a right to carry it across machines even to and from environments that did not allow me to do that. The utility was written in VB.Net.
+Back in late 2009, I wrote an encryption algorithm capable of obfuscating a single file and I used it to transfer data past an intelligent security system designed specifically to intercept the transfer of computer code. The data belonged to me and I believed that I shouldn't be stopped from carrying it with me. The utility was written in VB.Net as a class library and was a small dependency of a far larger windows application.
 
-In early 2010, I continued working on that utility to improve its efficiency and later I could enable it to work on files as well as directories.
+In early 2010, I continued working on it to improve its efficiency and later I could enable it to work on multiple inputs, which could even be a combination of files and directories.
 
-'re-write' is inspired by the old algorithm and is being now written in JavaScript. I started working on this command-line utility to share this secret weapon of mine with the open-source community.
+'re-write' is inspired by that old algorithm and has been re-written in JavaScript, which almost forms the reason for its name. The purpose of this 're-write' is to make sure that the old code doesn't die and also that I could share it with the open-source community.
 
 ## Installation
 
@@ -34,7 +36,7 @@ In early 2010, I continued working on that utility to improve its efficiency and
 
 ## How to Use
 
-'re-write' is a command-line utility that has two basic commands and the inputs you provide and how they are interpreted depend upon the command you use.
+'re-write' just has two commands. The inputs you provide and how they are interpreted depend upon the command you use.
 
 ### How to 're-write' Files
 
@@ -42,18 +44,18 @@ To 're-write' data into a single file, use the following command:
 
     re-write-do <source1> [source2] [source3] ... <target>
     
-`source1`, `source2`, `source3`, etc. could be files or directories
-`target` should be an output file or a directory where the 're-written' file will be placed
+- `source1`, `source2`, `source3`, etc. could be one or more files or directories. At least one is required.
+- `target` should be an output file or a directory where the 're-written' file should be placed.
 
-You can optionally use a password. Enter one when prompted for or just press `Enter` to skip encryption.
+You can optionally use a password when asked for. When not provided, encryption is skipped entirely.
 
 ### How to un-'re-write' files
 
-To 'un-re-write' data from a 're-written' file to the earlier form, use the following command:
+To un-'re-write' data from a 're-written' file to the earlier form, use the following command:
 
-    re-write-undo <source> <target>
+    re-write-undo <source> [target]
 
-`source` needs to be a file that was earlier created by 're-write'
-`target` needs to be a directory in which the recovered data needs to be placed
+- `source` needs to be a file that was earlier created by 're-write'.
+- `target` can to be a directory in which the recovered data needs to be extracted. When not supplied, it defaults to the current directory.
 
-If you used a password while 're-writing', you'll be asked for one before you can 'un-re-write'.
+If you used a password while 're-writing', you'll be asked for one before you can un-'re-write'.
