@@ -6,6 +6,7 @@ module.exports.errors = {
     UNDO_ARGS_INVALID: 'You supplied invalid input. Specify a source file and a target directory',
     PATH_DOES_NOT_EXIST: 'Path does not exist',
     TARGET_FILE_EXISTS: 'Target file already exists',
+    UNRECOGNIZED_TRANSFORM: 'The file cannot be (un)re-written. Please try with a newer version.',
     INCORRECT_PASSWORD: 'The password does not match with the one used while re-writing'
 };
 

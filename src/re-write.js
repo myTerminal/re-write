@@ -23,6 +23,7 @@ const getByteFromHex = input => parseInt(input, 16);
 // A collection of transforms
 const transforms = [
     {
+        code: '1.0',
         transform: input =>
             new Array(input.length).fill('').map((e, i) => getHexFromByte(input[i])).reduce((a, c) => a + c, ''),
         recover: transformedInput =>
@@ -55,9 +56,9 @@ const encryptOrDecryptText = (text, password) => {
 // Function to transform input files to an output file
 module.exports.doIt = (inputFilePaths, outputFilePath) => {
     const latestTransformIndex = transforms.length - 1;
-    const { transform } = transforms[latestTransformIndex];
+    const { code, transform } = transforms[latestTransformIndex];
     const password = prompt.question('Enter a password if you want to use one: ', { hideEchoBack: true });
-    const metadata = `${latestTransformIndex},${(password && md5(password))}`;
+    const metadata = `${code},${(password && md5(password))}`;
     const textFromFiles = inputFilePaths.map(
         f => `${liftPath(f)}${delimiters.data}${transform(fs.readFileSync(f))}`
     ).join(delimiters.files);
@@ -75,8 +76,15 @@ module.exports.doIt = (inputFilePaths, outputFilePath) => {
 module.exports.undoIt = (inputFilePath, outputDirectoryPath) => {
     const inputFileText = fs.readFileSync(inputFilePath).toString();
     const parsedInputText = inputFileText.split(delimiters.main);
-    const [transformIndex, usedPasswordHash] = parsedInputText[0].split(',');
-    const { recover } = transforms[+transformIndex];
+    const [transformCode, usedPasswordHash] = parsedInputText[0].split(',');
+    const transform = transforms.filter(t => t.code === transformCode)[0];
+
+    // Check if the transform can be (un)re-written
+    if (!transform) {
+        showError(errors.UNRECOGNIZED_TRANSFORM);
+    }
+
+    const { recover } = transform;
     const password = usedPasswordHash ? prompt.question('Enter a password to (un)re-write: ', { hideEchoBack: true }) : '';
 
     // Validate the provided password
