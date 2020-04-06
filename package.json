@@ -6,6 +6,9 @@
     "re-write-do": "bin/entry.js",
     "re-write-undo": "bin/entry.js"
   },
+  "files": [
+    "/bin"
+  ],
   "scripts": {
     "gulp": "gulp"
   },
