@@ -1,15 +1,12 @@
 # re-write
 
 [![npm version](https://badge.fury.io/js/re-write.svg)](https://badge.fury.io/js/re-write)
-[![npm downloads](https://img.shields.io/npm/dt/re-write.svg)](https://www.npmjs.com/package/re-write)  
+[![npm downloads](https://img.shields.io/npm/dt/re-write.svg)](https://www.npmjs.com/package/re-write)
+[![License](https://img.shields.io/github/license/myTerminal/ample-alerts.svg)](https://opensource.org/licenses/MIT)  
 [![Build Status](https://travis-ci.org/myTerminal/re-write.svg?branch=master)](https://travis-ci.org/myTerminal/re-write)
 [![Code Climate](https://codeclimate.com/github/myTerminal/re-write.png)](https://codeclimate.com/github/myTerminal/re-write)
 [![js-myterminal-style](https://img.shields.io/badge/code%20style-myterminal-blue.svg)](https://www.npmjs.com/package/eslint-config/myterminal)
 [![Coverage Status](https://img.shields.io/coveralls/myTerminal/re-write.svg)](https://coveralls.io/r/myTerminal/re-write?branch=master)  
-[![Dependency Status](https://david-dm.org/myTerminal/re-write.svg)](https://david-dm.org/myTerminal/re-write)
-[![devDependency Status](https://david-dm.org/myTerminal/re-write/dev-status.svg)](https://david-dm.org/myTerminal/re-write#info=devDependencies)
-[![peer Dependency Status](https://david-dm.org/myTerminal/re-write/peer-status.svg)](https://david-dm.org/myTerminal/re-write#info=peerDependencies)  
-[![License](https://img.shields.io/github/license/myTerminal/ample-alerts.svg)](https://opensource.org/licenses/MIT)  
 [![NPM](https://nodei.co/npm/re-write.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/re-write/)
 
 Rewrite files and directories into a single file and vice-versa
